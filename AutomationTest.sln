@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationTest.MX", "AutomationTest.MX\AutomationTest.MX.csproj", "{55B7B6E9-2E92-441F-AA89-42C9AC0E2EAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkFlow", "WorkFlow\WorkFlow.csproj", "{4627FDCE-C91B-4EC2-9FA7-7C276F785DFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55B7B6E9-2E92-441F-AA89-42C9AC0E2EAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55B7B6E9-2E92-441F-AA89-42C9AC0E2EAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55B7B6E9-2E92-441F-AA89-42C9AC0E2EAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55B7B6E9-2E92-441F-AA89-42C9AC0E2EAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4627FDCE-C91B-4EC2-9FA7-7C276F785DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4627FDCE-C91B-4EC2-9FA7-7C276F785DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4627FDCE-C91B-4EC2-9FA7-7C276F785DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4627FDCE-C91B-4EC2-9FA7-7C276F785DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {845B1C4E-5137-44C2-B777-9360F1DB946A}
+	EndGlobalSection
+EndGlobal
