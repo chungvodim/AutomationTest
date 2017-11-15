@@ -66,9 +66,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WorkFlow\WorkFlow.csproj">
-      <Project>{4627FDCE-C91B-4EC2-9FA7-7C276F785DFF}</Project>
-      <Name>WorkFlow</Name>
+    <ProjectReference Include="..\AutomationTest.WorkFlow\AutomationTest.WorkFlow.csproj">
+      <Project>{671a0564-e782-474b-8b34-9ee0a6284c58}</Project>
+      <Name>AutomationTest.WorkFlow</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

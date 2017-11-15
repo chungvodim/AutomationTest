@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WorkFlow;
+using AutomationTest.WorkFlow;
 
 namespace AutomationTest.MX
 {
@@ -25,7 +25,13 @@ namespace AutomationTest.MX
             int timeout = Convert.ToInt32(ConfigurationManager.AppSettings["timeout"]);
             try
             {
-                FlowConfiguration flowConfiguration = new FlowConfiguration(new ChromeDriver(), log, timeout, "MX_Test_Login.json");
+                //args = new string[] { "-b", "chrome", "-f", "MX_Test_Login.json", "-o", "headless", "window-size=1200x600" };
+                string browser = Helper.GetParam(args, "-b");
+                string filePath = Helper.GetParam(args, "-f");
+                string[] parameters = Helper.GetParams(args, "-o");
+                log.InfoFormat("Start testing testing file {0} with browser {1} and options {2}", filePath, browser, string.Join("|", parameters));
+                var driver = Helper.GenerateWebDriver(browser, parameters);
+                FlowConfiguration flowConfiguration = new FlowConfiguration(driver, log, timeout, filePath);
                 worker = new Worker(flowConfiguration);
                 worker.Excute();
             }
