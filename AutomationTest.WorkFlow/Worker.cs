@@ -56,24 +56,30 @@ namespace AutomationTest.WorkFlow
         {
             foreach (var verification in step.Verifications)
             {
-                switch (verification.ElementType)
+                if (verification.IsVisible.HasValue)
                 {
-                    case ElementType.WebElement:
-                        var element = GetElementWithWait(verification.ID, verification.Name, verification.XPath);
-                        if ((verification.IsExisted && element == null) || (!verification.IsExisted && element != null))
-                        {
-                            return StepResult.Fail(string.Format("Step {0} failed!", step.StepName));
-                        }
-                        break;
-                    case ElementType.URL:
-                        if((verification.AreEqual && _flowConfiguration.WebDriver.Url != verification.Value)|| 
-                            (!verification.AreEqual && _flowConfiguration.WebDriver.Url == verification.Value))
-                        {
-                            return StepResult.Fail(string.Format("Step {0} failed!", step.StepName));
-                        }
-                        break;
-                    default:
-                        break;
+                    var element = GetElementWithWait(verification.ID, verification.Name, verification.XPath);
+                    if (element != null && element.Displayed != verification.IsVisible.Value)
+                    {
+                        return StepResult.Fail(string.Format("element visibility is not match"));
+                    }
+                }
+
+                if (verification.IsExisted.HasValue)
+                {
+                    var element = GetElementWithWait(verification.ID, verification.Name, verification.XPath);
+                    if ((element != null) != verification.IsExisted.Value)
+                    {
+                        return StepResult.Fail(string.Format("element existence is not match"));
+                    }
+                }
+
+                if (verification.AreEqual.HasValue)
+                {
+                    if ((_flowConfiguration.WebDriver.Url == verification.Value) != verification.AreEqual.Value)
+                    {
+                        return StepResult.Fail(string.Format("values are not match"));
+                    }
                 }
             }
             return StepResult.Success(string.Format("Step {0} passed!", step.StepName));

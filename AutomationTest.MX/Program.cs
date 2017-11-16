@@ -25,6 +25,7 @@ namespace AutomationTest.MX
             int timeout = Convert.ToInt32(ConfigurationManager.AppSettings["timeout"]);
             try
             {
+                // option headless, window-size=1200x600,..........
                 //args = new string[] { "-b", "chrome", "-f", "MX_Test_Login.json", "-o", "headless", "window-size=1200x600" };
                 string browser = Helper.GetParam(args, "-b");
                 string filePath = Helper.GetParam(args, "-f");

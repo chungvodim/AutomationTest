@@ -30,8 +30,9 @@ namespace AutomationTest.WorkFlow
         public string XPath { get; set; }
         public string Value { get; set; }
         public ElementType ElementType { get; set; }
-        public bool IsExisted { get; set; }
-        public bool AreEqual { get; set; }
+        public bool? IsExisted { get; set; }
+        public bool? IsVisible { get; set; }
+        public bool? AreEqual { get; set; }
     }
 
     public enum ActionType
