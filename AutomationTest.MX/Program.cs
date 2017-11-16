@@ -26,7 +26,7 @@ namespace AutomationTest.MX
             try
             {
                 // option headless, window-size=1200x600,..........
-                //args = new string[] { "-b", "chrome", "-f", "MX_Test_Login.json", "-o", "headless", "window-size=1200x600" };
+                args = new string[] { "-b", "chrome", "-f", "MX_Test_Login.json", "-o", "window-size=1920x1080" };
                 string browser = Helper.GetParam(args, "-b");
                 string filePath = Helper.GetParam(args, "-f");
                 string[] options = Helper.GetParams(args, "-o");

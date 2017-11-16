@@ -24,11 +24,11 @@ namespace AutomationTest.WorkFlow
                 StepResult stepResult = this.RunStep(step);
                 if (stepResult.IsSuccess)
                 {
-                    log.InfoFormat("Step {0} passed: {1}", step.StepName, stepResult.Message);
+                    log.InfoFormat(stepResult.Message);
                 }
                 else
                 {
-                    log.WarnFormat("Step {0} failed: {1}", step.StepName, stepResult.Message);
+                    log.WarnFormat(stepResult.Message);
                     break;
                 }
             }
@@ -58,7 +58,7 @@ namespace AutomationTest.WorkFlow
             {
                 if (verification.IsVisible.HasValue)
                 {
-                    var element = GetElementWithWait(verification.ID, verification.Name, verification.XPath);
+                    var element = GetElementWithWait(verification);
                     if (element != null && element.Displayed != verification.IsVisible.Value)
                     {
                         return StepResult.Fail(string.Format("element visibility is not match"));
@@ -67,7 +67,7 @@ namespace AutomationTest.WorkFlow
 
                 if (verification.IsExisted.HasValue)
                 {
-                    var element = GetElementWithWait(verification.ID, verification.Name, verification.XPath);
+                    var element = GetElementWithWait(verification);
                     if ((element != null) != verification.IsExisted.Value)
                     {
                         return StepResult.Fail(string.Format("element existence is not match"));
@@ -85,32 +85,76 @@ namespace AutomationTest.WorkFlow
             return StepResult.Success(string.Format("Step {0} passed!", step.StepName));
         }
 
-        private IWebElement GetElement(string id, string name, string xPath)
+        private IWebElement GetElement(string id, string name, string xPath, string className)
         {
             var driver = _flowConfiguration.WebDriver;
-            var element = driver.FindElement(By.Id(id));
-            if(element == null)
+            IWebElement element = null;
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                element = driver.FindElement(By.Name(name));
-                if(element == null)
+                element = driver.FindElement(By.Id(id));
+            }
+            if (element == null)
+            {
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    element = driver.FindElement(By.XPath(xPath));
+                    element = driver.FindElement(By.Name(name));
+                }
+                if (element == null)
+                {
+                    if (!string.IsNullOrWhiteSpace(xPath))
+                    {
+                        element = driver.FindElement(By.XPath(xPath));
+                    }
+                    if (element == null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(className))
+                        {
+                            element = driver.FindElement(By.ClassName(className));
+                        }
+                    }
                 }
             }
 
             return element;
         }
 
-        private IWebElement GetElementWithWait(string id, string name, string xPath)
+        private IWebElement GetElementWithWait(Input input)
+        {
+            return GetElementWithWait(input.ID, input.Name, input.XPath, input.Class);
+        }
+
+        private IWebElement GetElementWithWait(Verification verification)
+        {
+            return GetElementWithWait(verification.ID, verification.Name, verification.XPath, verification.Class);
+        }
+
+        private IWebElement GetElementWithWait(string id, string name, string xPath, string className)
         {
             var waitDriver = _flowConfiguration.WebDriverWait;
-            var element = waitDriver.Until(ExpectedConditions.ElementExists(By.Id(id)));
+            IWebElement element = null;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                element = waitDriver.Until(ExpectedConditions.ElementExists(By.Id(id)));
+            }
             if (element == null)
             {
-                element = waitDriver.Until(ExpectedConditions.ElementExists(By.Name(name)));
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    element = waitDriver.Until(ExpectedConditions.ElementExists(By.Name(name)));
+                }
                 if (element == null)
                 {
-                    element = waitDriver.Until(ExpectedConditions.ElementExists(By.XPath(xPath)));
+                    if (!string.IsNullOrWhiteSpace(xPath))
+                    {
+                        element = waitDriver.Until(ExpectedConditions.ElementExists(By.XPath(xPath)));
+                    }
+                    if (element == null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(className))
+                        {
+                            element = waitDriver.Until(ExpectedConditions.ElementExists(By.ClassName(className)));
+                        }
+                    }
                 }
             }
 
@@ -129,16 +173,12 @@ namespace AutomationTest.WorkFlow
         private void PerformInput(Input input)
         {
             var driver = _flowConfiguration.WebDriver;
-            IWebElement element = null;
+            var javaScriptExecutor = _flowConfiguration.JavaScriptExecutor;
+            IWebElement element = GetElementWithWait(input);
 
-            if (!string.IsNullOrEmpty(input.ID))
+            if (element == null)
             {
-                element = GetElementWithWait(input.ID, input.Name, input.XPath);
-            }
-
-            if(element == null)
-            {
-                throw new ArgumentException("Unable to determine input");
+                throw new ArgumentException($"Unable to determine input: ID-{input.ID}, Name-{input.Name}, XPath-{input.XPath} ");
             }
 
             switch (input.ActionType)
@@ -149,6 +189,17 @@ namespace AutomationTest.WorkFlow
                 case ActionType.Select:
                     var selectElement = new SelectElement(element);
                     selectElement.SelectByValue(input.Value);
+                    break;
+                case ActionType.Check:
+                    var child = element.FindElement(By.XPath("//input[@value='" + input.Value + "']"));
+                    if(child.Displayed)
+                    {
+                        child.Click();
+                    }
+                    else
+                    {
+                        javaScriptExecutor.ExecuteScript("$('input[Value="+ input.Value + "]').click()");
+                    }
                     break;
                 case ActionType.Click:
                     element.Click();

@@ -14,6 +14,7 @@ namespace AutomationTest.WorkFlow
 {
     public class FlowConfiguration : IDisposable
     {
+        public IJavaScriptExecutor JavaScriptExecutor { get; set; }
         public IWebDriver WebDriver { get; set; }
         public WebDriverWait WebDriverWait { get; set; }
         public IEnumerable<Step> Steps { get; set; }
@@ -33,12 +34,14 @@ namespace AutomationTest.WorkFlow
         {
             this.WebDriver = webDriver;
             this.WebDriverWait = new WebDriverWait(this.WebDriver, TimeSpan.FromSeconds(timeOut));
+            this.JavaScriptExecutor = (IJavaScriptExecutor)this.WebDriver;
         }
 
         public FlowConfiguration(string browser, string[] options, ILog log, int timeOut, string testingStepsFile) : this(log, testingStepsFile)
         {
             this.WebDriver = Helper.GenerateWebDriver(browser, options);
             this.WebDriverWait = new WebDriverWait(this.WebDriver, TimeSpan.FromSeconds(timeOut));
+            this.JavaScriptExecutor = (IJavaScriptExecutor)this.WebDriver;
         }
 
         private bool disposed;

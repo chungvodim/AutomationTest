@@ -19,6 +19,7 @@ namespace AutomationTest.WorkFlow
         public string ID { get; set; }
         public string Name { get; set; }
         public string XPath { get; set; }
+        public string Class { get; set; }
         public string Value { get; set; }
         public ActionType ActionType { get; set; }
     }
@@ -28,6 +29,7 @@ namespace AutomationTest.WorkFlow
         public string ID { get; set; }
         public string Name { get; set; }
         public string XPath { get; set; }
+        public string Class { get; set; }
         public string Value { get; set; }
         public ElementType ElementType { get; set; }
         public bool? IsExisted { get; set; }
@@ -39,6 +41,7 @@ namespace AutomationTest.WorkFlow
     {
         SendKeys,
         Select,
+        Check,
         Click,
     }
 
