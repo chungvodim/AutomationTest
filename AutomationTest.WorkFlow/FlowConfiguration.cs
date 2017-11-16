@@ -19,17 +19,26 @@ namespace AutomationTest.WorkFlow
         public IEnumerable<Step> Steps { get; set; }
         public ILog Log { get; set; }
 
-        public FlowConfiguration(IWebDriver webDriver, ILog log, int timeOut, string testingStepsFile)
+        private FlowConfiguration(ILog log, string testingStepsFile)
         {
-            this.WebDriver = webDriver;
-            this.WebDriverWait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(timeOut));
-
             this.Log = log;
             var testingStepsContent = File.ReadAllText(testingStepsFile);
             if (!string.IsNullOrEmpty(testingStepsContent))
             {
                 Steps = JsonConvert.DeserializeObject<IEnumerable<Step>>(testingStepsContent);
             }
+        }
+
+        public FlowConfiguration(IWebDriver webDriver, ILog log, int timeOut, string testingStepsFile) : this(log, testingStepsFile)
+        {
+            this.WebDriver = webDriver;
+            this.WebDriverWait = new WebDriverWait(this.WebDriver, TimeSpan.FromSeconds(timeOut));
+        }
+
+        public FlowConfiguration(string browser, string[] options, ILog log, int timeOut, string testingStepsFile) : this(log, testingStepsFile)
+        {
+            this.WebDriver = Helper.GenerateWebDriver(browser, options);
+            this.WebDriverWait = new WebDriverWait(this.WebDriver, TimeSpan.FromSeconds(timeOut));
         }
 
         private bool disposed;

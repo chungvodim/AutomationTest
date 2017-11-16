@@ -29,10 +29,10 @@ namespace AutomationTest.MX
                 //args = new string[] { "-b", "chrome", "-f", "MX_Test_Login.json", "-o", "headless", "window-size=1200x600" };
                 string browser = Helper.GetParam(args, "-b");
                 string filePath = Helper.GetParam(args, "-f");
-                string[] parameters = Helper.GetParams(args, "-o");
-                log.InfoFormat("Start testing testing file {0} with browser {1} and options {2}", filePath, browser, string.Join("|", parameters));
-                var driver = Helper.GenerateWebDriver(browser, parameters);
-                FlowConfiguration flowConfiguration = new FlowConfiguration(driver, log, timeout, filePath);
+                string[] options = Helper.GetParams(args, "-o");
+                log.InfoFormat("Start testing testing file {0} with browser {1} and options {2}", filePath, browser, string.Join("|", options));
+                //var driver = Helper.GenerateWebDriver(browser, options);
+                FlowConfiguration flowConfiguration = new FlowConfiguration(browser, options, log, timeout, filePath);
                 worker = new Worker(flowConfiguration);
                 worker.Excute();
             }
