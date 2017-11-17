@@ -52,39 +52,6 @@ namespace AutomationTest.WorkFlow
             return result;
         }
 
-        private StepResult VerifyStep(Step step)
-        {
-            foreach (var verification in step.Verifications)
-            {
-                if (verification.IsVisible.HasValue)
-                {
-                    var element = GetElementWithWait(verification);
-                    if (element != null && element.Displayed != verification.IsVisible.Value)
-                    {
-                        return StepResult.Fail(string.Format("element visibility is not match"));
-                    }
-                }
-
-                if (verification.IsExisted.HasValue)
-                {
-                    var element = GetElementWithWait(verification);
-                    if ((element != null) != verification.IsExisted.Value)
-                    {
-                        return StepResult.Fail(string.Format("element existence is not match"));
-                    }
-                }
-
-                if (verification.AreEqual.HasValue)
-                {
-                    if ((_flowConfiguration.WebDriver.Url == verification.Value) != verification.AreEqual.Value)
-                    {
-                        return StepResult.Fail(string.Format("values are not match"));
-                    }
-                }
-            }
-            return StepResult.Success(string.Format("Step {0} passed!", step.StepName));
-        }
-
         private IWebElement GetElement(string id, string name, string xPath, string className)
         {
             var driver = _flowConfiguration.WebDriver;
@@ -120,7 +87,14 @@ namespace AutomationTest.WorkFlow
 
         private IWebElement GetElementWithWait(Input input)
         {
-            return GetElementWithWait(input.ID, input.Name, input.XPath, input.Class);
+            if(input.IsVisible != true)
+            {
+                return GetElementWithWait(input.ID, input.Name, input.XPath, input.Class);
+            }
+            else
+            {
+                return GetVisibleElementWithWait(input.ID, input.Name, input.XPath, input.Class);
+            }
         }
 
         private IWebElement GetElementWithWait(Verification verification)
@@ -153,6 +127,39 @@ namespace AutomationTest.WorkFlow
                         if (!string.IsNullOrWhiteSpace(className))
                         {
                             element = waitDriver.Until(ExpectedConditions.ElementExists(By.ClassName(className)));
+                        }
+                    }
+                }
+            }
+
+            return element;
+        }
+
+        private IWebElement GetVisibleElementWithWait(string id, string name, string xPath, string className)
+        {
+            var waitDriver = _flowConfiguration.WebDriverWait;
+            IWebElement element = null;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                element = waitDriver.Until(ExpectedConditions.ElementIsVisible(By.Id(id)));
+            }
+            if (element == null)
+            {
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    element = waitDriver.Until(ExpectedConditions.ElementIsVisible(By.Name(name)));
+                }
+                if (element == null)
+                {
+                    if (!string.IsNullOrWhiteSpace(xPath))
+                    {
+                        element = waitDriver.Until(ExpectedConditions.ElementIsVisible(By.XPath(xPath)));
+                    }
+                    if (element == null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(className))
+                        {
+                            element = waitDriver.Until(ExpectedConditions.ElementIsVisible(By.ClassName(className)));
                         }
                     }
                 }
@@ -207,6 +214,39 @@ namespace AutomationTest.WorkFlow
                 default:
                     break;
             }
+        }
+
+        private StepResult VerifyStep(Step step)
+        {
+            foreach (var verification in step.Verifications)
+            {
+                if (verification.IsVisible.HasValue)
+                {
+                    var element = GetElementWithWait(verification);
+                    if (element != null && element.Displayed != verification.IsVisible.Value)
+                    {
+                        return StepResult.Fail(string.Format("element visibility is not match"));
+                    }
+                }
+
+                if (verification.IsExisted.HasValue)
+                {
+                    var element = GetElementWithWait(verification);
+                    if ((element != null) != verification.IsExisted.Value)
+                    {
+                        return StepResult.Fail(string.Format("element existence is not match"));
+                    }
+                }
+
+                if (verification.AreEqual.HasValue)
+                {
+                    if ((_flowConfiguration.WebDriver.Url == verification.Value) != verification.AreEqual.Value)
+                    {
+                        return StepResult.Fail(string.Format("values are not match"));
+                    }
+                }
+            }
+            return StepResult.Success(string.Format("Step {0} passed!", step.StepName));
         }
 
         private bool disposed;

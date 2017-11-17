@@ -14,26 +14,26 @@ namespace AutomationTest.WorkFlow
         public IEnumerable<Verification> Verifications;
     }
 
-    public class Input
+    public class Element
     {
         public string ID { get; set; }
         public string Name { get; set; }
         public string XPath { get; set; }
         public string Class { get; set; }
         public string Value { get; set; }
+    }
+
+    public class Input : Element
+    {
+        public bool? IsVisible { get; set; }
         public ActionType ActionType { get; set; }
     }
 
-    public class Verification
+    public class Verification : Element
     {
-        public string ID { get; set; }
-        public string Name { get; set; }
-        public string XPath { get; set; }
-        public string Class { get; set; }
-        public string Value { get; set; }
-        public ElementType ElementType { get; set; }
-        public bool? IsExisted { get; set; }
+        public VerificationType VerificationType { get; set; }
         public bool? IsVisible { get; set; }
+        public bool? IsExisted { get; set; }
         public bool? AreEqual { get; set; }
     }
 
@@ -45,9 +45,9 @@ namespace AutomationTest.WorkFlow
         Click,
     }
 
-    public enum ElementType
+    public enum VerificationType
     {
-        WebElement,
+        Element,
         URL,
     }
 }
